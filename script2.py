@@ -1,3 +1,23 @@
+def hashtags(thedic):
+    print("# = 1 Percent")        
+    for k,v in thedic.items():
+        value = (v * 100) / total       
+        if v == biggest:
+            print(k, round(value)*'#', '<-- biggest value')
+        elif v == smallest:
+            print(k, round(value)*'#', '<-- smallest value')  
+        else:
+            print(k, round(value)*'#')
+
+def biggest_smallest(thedic):
+    for k, v in thedic.items():
+        if v > biggest:
+            biggest = v
+    smallest = biggest
+    for k, v in thedic.items():
+        if v < smallest:
+            smallest = v
+
 newfile = 'y'
 print("Starting script2.py\n")
 while newfile == 'y':
@@ -34,45 +54,14 @@ while newfile == 'y':
         x = (G + C) / (A + T + G + C) * 100
         print('G-C Percentage:',round(x),'% (rounded)')
 
-        #calculating the most common nucleotide
-        for k, v in nuc_dic.items():
-            if v > biggest:
-                biggest = v
-        
-        smallest = biggest
-        for k, v in nuc_dic.items():
-            if v < smallest:
-                smallest = v
-                
-        for k,v in nuc_dic.items():
-            if v == biggest:
-                print(k, round((((v * 100) / total)))*'#', "<-- biggest value")
-            elif v == smallest:
-                print(k, round((((v * 100) / total)))*'#', "<-- smallest value")
-            else:
-                print(k, round((((v * 100) / total)))*'#')
-
-
+        biggest_smallest(nuc_dic)
+        hashtags(nuc_dic)
 
     if file_type == "Aminoacids":
         print('Counter:',aminoacid_dic)
 
-        for k, v in aminoacid_dic.items():
-            if v > biggest:
-                biggest = v
-
-        smallest = biggest
-        for k, v in aminoacid_dic.items():
-            if v < smallest:
-                smallest = v
-
-        for k,v in aminoacid_dic.items():
-            if v == biggest:
-                print(k, round((((v * 100) / total))*2.5)*'#', '<-- biggest value')
-            elif v == smallest:
-                print(k, round((((v * 100) / total))*2.5)*'#', '<-- smallest value')  
-            else:
-                print(k, round((((v * 100) / total))*2.5)*'#')
+        biggest_smallest(aminoacid_dic)
+        hashtags(aminoacid_dic)
     
 
     file.close()
