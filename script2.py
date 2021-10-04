@@ -1,5 +1,6 @@
 def hashtags(thedic):
-    print("# = 1 Percent")        
+    print("# = 1 Percent")
+    biggest, smallest = biggest_smallest(thedic)
     for k,v in thedic.items():
         value = (v * 100) / total       
         if v == biggest:
@@ -10,6 +11,7 @@ def hashtags(thedic):
             print(k, round(value)*'#')
 
 def biggest_smallest(thedic):
+    biggest = 0
     for k, v in thedic.items():
         if v > biggest:
             biggest = v
@@ -17,6 +19,7 @@ def biggest_smallest(thedic):
     for k, v in thedic.items():
         if v < smallest:
             smallest = v
+    return biggest, smallest
 
 newfile = 'y'
 print("Starting script2.py\n")
@@ -51,16 +54,14 @@ while newfile == 'y':
         T = nuc_dic['T']
         C = nuc_dic['C']
         A = nuc_dic['A']
+
+        nuc_dic.values()
         x = (G + C) / (A + T + G + C) * 100
         print('G-C Percentage:',round(x),'% (rounded)')
-
-        biggest_smallest(nuc_dic)
         hashtags(nuc_dic)
 
     if file_type == "Aminoacids":
         print('Counter:',aminoacid_dic)
-
-        biggest_smallest(aminoacid_dic)
         hashtags(aminoacid_dic)
     
 
