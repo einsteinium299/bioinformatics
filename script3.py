@@ -9,4 +9,12 @@ for line in file:
 
 file.close()
 newfile.close()
-test
+
+amino_acids = "0123456789"
+
+for characters in file_in_open:
+    characters_stripped = characters.strip()
+    if not characters_stripped.startswith(">"):
+        if amino_acids in characters_stripped:
+            print("Not correct")
+            break
