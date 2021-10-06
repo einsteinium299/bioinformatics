@@ -1,7 +1,9 @@
 newfile = True
-file_output = open(input('How would you like to name your fasta file? '), 'a')
+file_output = open(input('How would you like to name your multi-fasta file? '), 'a')
 
 while newfile == True:
+
+    #Setting up all the variables needed in the script
     file_input = open(input('Input your fasta file: '), 'r')
     max_len_line = int(input('What would you like the sequence line length to be? (Must be an integer!): '))
     sequence_invalid_DNA = False
@@ -9,12 +11,9 @@ while newfile == True:
     file_type = 'DNA'
     new_file_loop = True
     line_print = ''
-
     differ_DNA_P = ['*', 'E', 'F', 'J', 'O', 'P', 'Q', 'X']
-
     char_DNA = ['A','C','G','T','U','(i)','R','Y','K',
                 'M','S','W','B','D','H','V','N','-']
-
     char_P = ['A','B','C','D','E','F','G',
               'H','I','J','K','L','M','N',
               'O','P','Q','R','S','T','U',
@@ -22,22 +21,25 @@ while newfile == True:
 
     for line in file_input:
         if line.startswith('>'):
+            #writing the first line without any changes
             file_output.write(line)
+
         if not line.startswith('>'):
             line = line.strip()
         #    line = line.replace(" ", "")
+            
             for letter in line:
-                #length of line
+                #Counting the length a line until it has met the max line length.
                 line_print += letter
                 length_line_print = len(line_print)
-                if length_line_print == len(line_print):
+                last_line = line_print
+                if length_line_print == max_len_line:
                     last_line = ''
-                else:
-                    last_line = line_print
 
+                #When length_line_print has met max_len_line it will write the output
+                #to the multi-fasta file and reset it's variables.
                 if length_line_print is max_len_line:
                     file_output.write(line_print + '\n')
-
                     line_print = ''
                     length_line_print = 0
                 
@@ -50,13 +52,17 @@ while newfile == True:
                 if not letter in char_P:
                     sequence_invalid_P = True
     
-    file_output.write(last_line + '\n\n')
+    #Printing the last line of the file that has not been fully filled
+    file_output.write(last_line + '\n')
+
     print('File type of imported file:', file_type)
 
+    #Checking weather the sequence only valid DNA fasta file characters
     if file_type == 'DNA':
         if sequence_invalid_DNA == True:
            print('Sequence is invalid!')
 
+    #Checking weather the sequence only valid Aminoacid fasta file characters
     if file_type == 'Aminoacid':
         if sequence_invalid_P == True:
             print('Sequence is invalid!')
@@ -69,6 +75,8 @@ while newfile == True:
         if open_new_file == 'y':
             newfile = True
             new_file_loop = False
+            #writing a new line for between the fasta files
+            file_output.write('\n')
         elif open_new_file == 'n':
             newfile = False
             new_file_loop = False
@@ -77,3 +85,4 @@ while newfile == True:
             new_file_loop = True
 
 file_output.close()
+print('Script finished!')
