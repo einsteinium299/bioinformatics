@@ -6,6 +6,8 @@ while newfile == True:
     #Setting up all the variables needed in the script
     file_input = open(input('Input your fasta file: '), 'r')
     max_len_line = int(input('What would you like the sequence line length to be? (Must be an integer!): '))
+    len_group = int(input('How big would you like your groups to be? : '))
+    groupcounter = 0
     sequence_invalid_DNA = False
     sequence_invalid_P = False
     file_type = 'DNA'
@@ -26,23 +28,31 @@ while newfile == True:
 
         if not line.startswith('>'):
             line = line.strip()
-        #    line = line.replace(" ", "")
-            
+            line = line.replace(" ", "")         
+
             for letter in line:
                 #Counting the length a line until it has met the max line length.
                 line_print += letter
+                groupcounter += 1
                 length_line_print = len(line_print)
                 last_line = line_print
                 if length_line_print == max_len_line:
                     last_line = ''
 
+                #Making groups in each line.
+                if groupcounter is len_group:
+                    line_print = line_print + ' '
+                    groupcounter = 0
+
                 #When length_line_print has met max_len_line it will write the output
-                #to the multi-fasta file and reset it's variables.
+                #to the multi-fasta file and reset it's variables.        
                 if length_line_print is max_len_line:
+                    line_print = line_print.strip()
                     file_output.write(line_print + '\n')
                     line_print = ''
                     length_line_print = 0
-                
+                    groupcounter = 0
+
                 #Checking if file COULD be an Aminoacid
                 if letter in differ_DNA_P:
                     file_type = 'Aminoacid'
