@@ -1,23 +1,11 @@
-#def reader()
+#! C:\Users\joris\AppData\Local\Programs\Python\Python38\python.exe
 
-#def converter()
-
-#def writer()
-
-
-print('File in / File out - Divide by space')
-file_in, file_out = input('> ').split()
-file = open(file_in, 'r')
-file_export = open(file_out, 'w')
-
-string = ''
-aminoacid = ''
 
 dic_P = {
         'ATA':'I', 'ATC':'I', 'ATT':'I', 'ATG':'M',
         'ACA':'T', 'ACC':'T', 'ACG':'T', 'ACT':'T',
         'AAC':'N', 'AAT':'N', 'AAA':'K', 'AAG':'K',
-        'AGC':'S', 'AGT':'S', 'AGA':'R', 'AGG':'R',                
+        'AGC':'S', 'AGT':'S', 'AGA':'R', 'AGG':'R',
         'CTA':'L', 'CTC':'L', 'CTG':'L', 'CTT':'L',
         'CCA':'P', 'CCC':'P', 'CCG':'P', 'CCT':'P',
         'CAC':'H', 'CAT':'H', 'CAA':'Q', 'CAG':'Q',
@@ -31,20 +19,60 @@ dic_P = {
         'TAC':'Y', 'TAT':'Y', 'TAA':'_', 'TAG':'_',
         'TGC':'C', 'TGT':'C', 'TGA':'_', 'TGG':'W'}
 
-for line in file:
-    line = line.strip()
-    if line.startswith('>'):
-        file_export.write('>Protein seq of ' + file_in +'\n')
-    else:
-        for char in line:
-            string += char
-            if len(string) == 3:
-                aminoacid += dic_P[string]
-                string = ''
-                if len(aminoacid) == 100:
-                    file_export.write(aminoacid + '\n')
-                    aminoacid = ''
+# Read file
+def read_file(filename):
+    filehandle = open(filename)
+    for line in filehandle:
+        if line.startswith('>'):
+            header = line.rstrip()
+            sequence = ''
+        else:
+            sequence += line.rstrip()
+    filehandle.close()
 
-print('Script Finished!')
-file.close()
-file_export.close()
+    return sequence, header
+
+def check_if_nuc(sequence):
+    nuc_sequence = True
+    for char in sequence:
+        if char not in 'ATGC':
+            nuc_sequence = False
+            break
+    return nuc_sequence
+
+def make_protein(sequence, start_position):
+    protein_str = ''
+    for position in range(start_position, len(sequence), 3):
+        triplet = sequence[position:position+3]
+        if len(triplet) == 3:
+            protein_str += dic_P[triplet]
+    return protein_str
+
+def write_outputfile(protein_str, outputfilehandle, header):
+    print(header, file = outputfilehandle)
+    for position in range(0, len(protein_str), 70):
+        print(protein_str[position:position+70], file = outputfilehandle)
+    print(' ', file=outputfilehandle)
+
+
+def main():
+    filename = input('Geef hier de filenaam weer gescheiden met een spatie: ')
+    filelist = filename.split()
+
+    outputfilename = input('Geef hier de naam van het outputbestand: ')
+    outputfilehandle = open(outputfilename, 'w')
+
+    start_position = input("Geef hier de startpositie van de eerste codon aan: ")
+    start_position = int(start_position) - 1
+
+    for filename in filelist:
+        sequence, header = read_file(filename)
+        nuc_sequence = check_if_nuc(sequence)
+        if nuc_sequence == True:
+            protein_str = make_protein(sequence, start_position)
+            write_outputfile(protein_str, outputfilehandle, header)
+        else:
+            print('Warning!, one or multiple files contain no nucleotides and has not been writen to the outputfile.')
+    outputfilehandle.close()
+
+main()
