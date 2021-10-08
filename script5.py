@@ -1,3 +1,10 @@
+#def reader()
+
+#def converter()
+
+#def writer()
+
+
 print('File in / File out - Divide by space')
 file_in, file_out = input('> ').split()
 file = open(file_in, 'r')
@@ -26,7 +33,9 @@ dic_P = {
 
 for line in file:
     line = line.strip()
-    if not line.startswith('>'):       
+    if line.startswith('>'):
+        file_export.write('>Protein seq of ' + file_in +'\n')
+    else:
         for char in line:
             string += char
             if len(string) == 3:
