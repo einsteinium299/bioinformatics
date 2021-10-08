@@ -1,18 +1,35 @@
- Source: https://www.ncbi.nlm.nih.gov/gene/3043
-input_filename = open("sequenceprot.fasta.fasta")
-output_filename = input("Please choose your output file name: ")
-replacing_letter = input('What is your output letter? ')
-spot = input("What is the position of your input letter? ")
-output_filename = open(output_filename, "w")
-# Replaces one letter with the other, but you can not choose a line yet.
-def replacer(replaced_lines, letter, position):
-        return replaced_lines[:position] + letter + replaced_lines[position+1:]
+# Haemoglobin S Coding strand mutation: GAG is replaced by GTG
+# This replaces the aminoacid E with V
+# This replaces mRNA CTC with CAC
 
-for lines in input_filename:
-    lines = lines.rstrip()
-    if not lines.startswith(">"):
-        print(replacer(lines, replacing_letter, int(spot)))
-        output_filename.write(lines)
+def replacement(startpos, string, out):
+    endpos = int(startpos) + len(string)
+    replace = line[:int(startpos)] + string + line[int(endpos):]
+    output_file.write(replace + '\n')
+    
+inputfile, begin, letters, linenum = input('Input your inputfile, startposition, string and linenumber each divided by a space: ').split()
+output_file = open(input('How would you like to call your output file? '), 'w')
 
-input_filename.close()
-output_filename.close()
+line_to_write = int(linenum) -1
+line_count = 0
+looper = False
+
+HBB_seq = open(inputfile, 'r')
+
+for line in HBB_seq:
+    line = line.strip()
+    if line.startswith('>'):
+        output_file.write(line + ' MUTATED!' + '\n')
+    else:
+        if line_count == line_to_write:
+            looper = True
+        if looper == False:
+            output_file.write(line + '\n')
+        line_count += 1
+
+        while looper:
+            replacement(begin, letters, output_file)
+            looper = False
+            
+HBB_seq.close()
+output_file.close()
