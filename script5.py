@@ -1,5 +1,6 @@
-file = open('/homes/sldehaan/Documents/Practicum/Opdracht01/seq2.fasta', 'r')
-output_file = open('outfile.fasta', 'w')
+file_in, file_out = input('File in / File out: ').strip()
+file = open('file_in', 'r')
+file_export = open('file_out', 'w')
 
 string = ''
 aminoacid = ''
@@ -33,8 +34,6 @@ for line in file:
                 if len(aminoacid) == 50:
                     output_file.write(aminoacid + '\n')
                     aminoacid = ''
-               
-
 
 file.close()
 output_file.close()
