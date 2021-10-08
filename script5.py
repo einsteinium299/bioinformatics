@@ -1,6 +1,7 @@
-file_in, file_out = input('File in / File out: ').strip()
-file = open('file_in', 'r')
-file_export = open('file_out', 'w')
+print('File in / File out - Divide by space')
+file_in, file_out = input('> ').split()
+file = open(file_in, 'r')
+file_export = open(file_out, 'w')
 
 string = ''
 aminoacid = ''
@@ -31,9 +32,10 @@ for line in file:
             if len(string) == 3:
                 aminoacid += dic_P[string]
                 string = ''
-                if len(aminoacid) == 50:
-                    output_file.write(aminoacid + '\n')
+                if len(aminoacid) == 100:
+                    file_export.write(aminoacid + '\n')
                     aminoacid = ''
 
+print('Script Finished!')
 file.close()
-output_file.close()
+file_export.close()
