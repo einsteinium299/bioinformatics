@@ -51,12 +51,24 @@ def counter(counter):
 
 counter(dic_P_counter)
 
-total = ''
+maxi = 0
 
-#for k1, v1 in dic_P_counter.items():
-for codon, aminoacid in dic_P.items():
+amino = 'A'
+for k, v in dic_P_counter.items():
+    for codon2, amino in dic_P.items():     
+        if v > maxi:
+            if k in ['GCA', 'GCC', 'GCG', 'GCT']:
+                maxi = v
+
+print(maxi)
+
+print(dic_P_counter)
+
+for k1, v1 in dic_P_counter.items():
+    for codon, aminoacid in dic_P.items():
     for codon2, aminoacid2 in dic_P.items():
-        if aminoacid == aminoacid2:
+        if 
+            if aminoacid == aminoacid2:
 
 
 #print(dic_P_counter)
