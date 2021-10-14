@@ -37,38 +37,55 @@ dic_P = {
             'TGC':'C', 'TGT':'C', 'TGA':'_', 'TGG':'W'}
 
 file1 = open('sequence_N.fasta', 'r')
+fileout = open('out.fasta', 'w')
 
-def counter(counter):
-    codon=''
-    for line in file1:
-        line = line.strip()
-        if not line.startswith('>'):
-            for letter in line:
-                codon += letter
-                if len(codon) == 3:
-                    counter[codon] += 1
-                    codon = ''
 
-counter(dic_P_counter)
+codon=''
+aminoacids=''
+x = ''
 
-maxi = 0
+for line in file1:
+    line = line.strip()
+    if not line.startswith('>'):
+        for letter in line:
+            codon += letter
+            if len(codon) == 3:
+                dic_P_counter[codon] += 1
+                for codon1, aminoacid1 in dic_P.items():
+                    for codon2, aminoacid2 in dic_P.items():
+                        if aminoacid1 == aminoacid2:
+                            x += [codon]
+            codon = ''
+print(x)
+                #aminoacids += dic_P[codon]
+                # if len(aminoacids) == 70:
+                    # print(aminoacids, file=fileout)
+                    # aminoacids = ''
+                
+               
 
-amino = 'A'
-for k, v in dic_P_counter.items():
-    for codon2, amino in dic_P.items():     
-        if v > maxi:
-            if k in ['GCA', 'GCC', 'GCG', 'GCT']:
-                maxi = v
+file1.close()
 
-print(maxi)
 
-print(dic_P_counter)
 
-for k1, v1 in dic_P_counter.items():
-    for codon, aminoacid in dic_P.items():
-    for codon2, aminoacid2 in dic_P.items():
-        if 
-            if aminoacid == aminoacid2:
+# maxi = 0
+
+# amino = 'A'
+# for k, v in dic_P_counter.items():
+#     for codon2, amino in dic_P.items():     
+#         if v > maxi:
+#             if k in ['GCA', 'GCC', 'GCG', 'GCT']:
+#                 maxi = v
+
+# print(maxi)
+
+# print(dic_P_counter)
+
+# for k1, v1 in dic_P_counter.items():
+#     for codon, aminoacid in dic_P.items():
+#     for codon2, aminoacid2 in dic_P.items():
+#         if 
+#             if aminoacid == aminoacid2:
 
 
 #print(dic_P_counter)
@@ -78,4 +95,3 @@ for k1, v1 in dic_P_counter.items():
 #   loop door de codontabel:
 #       als amino uit de codontabel hetzelfde is als:
 
-file1.close()
