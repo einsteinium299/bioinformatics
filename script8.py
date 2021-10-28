@@ -1,4 +1,6 @@
 def counting_atoms():
+    '''Counting the total weight of all atoms in a pdb file'''
+    
     myfile = open('mmdb_5UAK.pdb', 'r')
 
     dic_atom_weight = {
@@ -15,12 +17,19 @@ def counting_atoms():
     for line in myfile:
         if line.startswith('ATOM'):
             atom = line[77:79]
-            print(atom)
             count += dic_atom_weight[atom]
-    print(count)
-    
+        elif line.startswith('SEQRES'):
+            shorten_amino(line)
+
     myfile.close()
     outfile.close()
+
+
+def shorten_amino(text):
+    ''''Shortens amino names'''
+    multi_triplet = text[19:70]
+    print(multi_triplet)
+
 
 def main():
     counting_atoms()
