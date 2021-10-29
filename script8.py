@@ -46,7 +46,8 @@ def weight_atom(line):
     atom = ''
     dic_atom_weight = {
         'C ':12.011, 'N ':14.007,
-        'O ':15.999, 'S ':32.06}
+        'O ':15.999, 'S ':32.06, 
+        'Se':78.971}
 
     atom = line[77:79]
     weight += dic_atom_weight[atom]
@@ -67,14 +68,18 @@ def input_user():
 
     pdbfile = open('mmdb_5UAK.pdb', 'r')
     sequence = open('sequence.fasta', 'r')
-    outfile = open('out.fasta', 'w')
+    outfile = open('helix_sheet.fasta', 'w')
     return pdbfile, sequence, outfile
 
+# def writing_file
+# def reading_file
 
 def main():
     print(".---------.\n| script8 |\n'---------'")
     print('Script 8 is now running!\n')
+
     pdbfile, sequence, outfile = input_user()
+
     # Declaring start variables
     weight = 0
     amino_string = ''
@@ -87,8 +92,7 @@ def main():
     sheet_amino_startpos = ''
     sheet_amino_endpos = ''
     final_sheet = ''
-    title = ''
-    ### 
+    title = []
 
     #put this in read file
     for line in pdbfile:
@@ -108,9 +112,10 @@ def main():
             sheet_amino_endpos = line[33:37]
             final_sheet += return_string[int(sheet_amino_startpos)-1:int(sheet_amino_endpos)]
         elif line.startswith('TITLE'):
-            title += line
+            title.append(line)
 
 
+    # This part is for the last line
     print('Line:', str(count+1))          
     print('PDB ⇾ ', amino_string)
     print('SEQ ⇾ ', sequence_list[-1])
@@ -119,11 +124,13 @@ def main():
         print('🟢 EQUAL 🟢\n')
     else:
         print('🔴 NOT EQUAL 🔴\n')
+    # -------------------------
 
-    print('Atom weight:', round(weight),'u')
-
-    ###
-    print(title, 'Helix: ', file=outfile)
+    new_title = ''
+    new_title = title[0].strip() + title[1].strip()
+    new_title = new_title.replace('2', '')
+    new_title = " ".join(new_title.split())
+    print(new_title.replace('TITLE', '').strip(), '- Helix', file=outfile)
 
     line = ''
     for letter in final_helix:
@@ -133,7 +140,8 @@ def main():
             line = ''
     print(line, file=outfile)
 
-    print(title, 'Sheet: ','\n', file=outfile)
+    print(file=outfile)
+    print(new_title.replace('TITLE', '').strip(), '- Sheet', file=outfile)
     line = ''
     for letter in final_sheet:
         line += letter
@@ -145,5 +153,7 @@ def main():
     pdbfile.close()
     sequence.close()
     outfile.close()
+
+    print('⚛ Atomic weight ⇾', round(weight),'u')
     print('Script has finished!')
 main()
