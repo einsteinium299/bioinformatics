@@ -149,7 +149,7 @@ def reading_file(pdbfile, sequence_list):
             title.append(line)
 
     pdbfile.close()
-    return u_counter, final_helix, final_sheet, line_count, amino_string, title
+    return u_counter, final_helix, final_sheet, line_count, amino_string, title, return_string
 
 
 def writing_file(final_helix, final_sheet, title, outfile):
@@ -181,6 +181,18 @@ def writing_file(final_helix, final_sheet, title, outfile):
     outfile.close()
 
 
+def histogram(sequence, sequence_type):
+    aminoacid_dic = {'A':0, 'R':0, 'N':0, 'D':0, 'C':0, 'E':0, 'Q':0, 'G':0, 'H':0, 'I':0, 'L':0, 'K':0, 'M':0, 'F':0, 'P':0, 'S':0, 'T':0, 'W':0, 'Y':0, 'V':0}
+
+    print('Histogram of:', sequence_type)
+    for letter in sequence:
+        aminoacid_dic[letter] += 1
+
+    for k,v in aminoacid_dic.items():
+        value = (v * 400) / len(sequence)
+        print(k, round(value)*'#')
+
+
 def main():
     print('Script 8 is now running!\n')
 
@@ -191,13 +203,18 @@ def main():
     sequence_list = reading_fasta_file(sequence)
 
     # Reading the pdb file
-    u_counter, final_helix, final_sheet, line_count, amino_string, title = reading_file(pdbfile, sequence_list)
+    u_counter, final_helix, final_sheet, line_count, amino_string, title, return_string = reading_file(pdbfile, sequence_list)
 
     # Printing information for the last line
     terminal_output(line_count, amino_string, sequence_list)
 
     # Writing HELIX, SHEET and TITLE to output file
     writing_file(final_helix, final_sheet, title, outfile)
+
+    # Amino acid sequence histogram
+    sequence_and_type = {'Normal amino acid sequence':return_string, 'Helix sequence':final_helix, 'Sheet sequence':final_sheet}
+    for seq_type, sequence in sequence_and_type.items():
+        histogram(sequence, seq_type)
 
     print('⚛ Atomic weight ⇾', round(u_counter),'u')
     
