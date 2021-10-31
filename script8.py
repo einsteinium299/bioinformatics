@@ -79,17 +79,21 @@ def shorten_amino(line, sequence_list, line_count, amino_string, return_string):
         return_string += multi_to_single[item]
 
         if len(amino_string) >= 70:
-            print('Line:' , str(line_count+1))
-            print('PDB ⇾ ', amino_string[:70])
-            print('SEQ ⇾ ', sequence_list[line_count])
-            if sequence_list[line_count] == amino_string[:70]:
-                print('🟢 Equal 🟢\n')
-            else:
-                print('🔴 NOT EQUAL 🔴\n')
+            terminal_output(line_count, amino_string, sequence_list)
             line_count += 1
             amino_string = amino_string[70:]
 
     return line_count, amino_string, return_string
+
+
+def terminal_output(line_count, amino_string, sequence_list):
+    print('Line:' , str(line_count+1))
+    print('PDB ⇾ ', amino_string[:70])
+    print('SEQ ⇾ ', sequence_list[line_count])
+    if sequence_list[line_count] == amino_string[:70]:
+        print('🟢 Equal 🟢\n')
+    else:
+        print('🔴 NOT EQUAL 🔴\n')
 
 
 def reading_file(pdbfile, sequence_list):
@@ -188,21 +192,15 @@ def main():
 
     # Reading the pdb file
     u_counter, final_helix, final_sheet, line_count, amino_string, title = reading_file(pdbfile, sequence_list)
-    print('⚛ Atomic weight ⇾', round(u_counter),'u')
 
     # Printing information for the last line
-    print('Line:', str(line_count+1))
-    print('PDB ⇾ ', amino_string)
-    print('SEQ ⇾ ', sequence_list[-1])
-    
-    if amino_string == sequence_list[-1]:
-        print('🟢 EQUAL 🟢\n')
-    else:
-        print('🔴 NOT EQUAL 🔴\n')
+    terminal_output(line_count, amino_string, sequence_list)
 
     # Writing HELIX, SHEET and TITLE to output file
     writing_file(final_helix, final_sheet, title, outfile)
 
-    print('Script has finished!')
+    print('⚛ Atomic weight ⇾', round(u_counter),'u')
     
+    print('Script has finished!')
+
 main()
