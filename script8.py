@@ -192,6 +192,16 @@ def histogram(sequence, sequence_type):
         value = (v * 400) / len(sequence)
         print(k, round(value)*'#')
 
+    return aminoacid_dic
+
+def hydrophilicity(aminoacid_dic):
+    hydropathy_scores = {'A':1.8, 'R':-4.5, 'N':-3.5, 'D':-3.5, 'C':2.5, 'E':-3.5, 'Q':-3.5, 'G':-0.4, 'H':-3.2, 'I':4.5, 'L':3.8, 'K':-3.9, 'M':1.9, 'F':2.8, 'P':-1.6, 'S':-0.8, 'T':-0.7, 'W':-0.9, 'Y':-1.3, 'V':4.2}
+    score = 0
+
+    for amino, counter, in aminoacid_dic.items():
+        score += hydropathy_scores[amino] * counter
+    print('hydrophilicity:', round(score), '\n')
+
 
 def main():
     print('Script 8 is now running!\n')
@@ -214,7 +224,8 @@ def main():
     # Amino acid sequence histogram
     sequence_and_type = {'Normal amino acid sequence':return_string, 'Helix sequence':final_helix, 'Sheet sequence':final_sheet}
     for seq_type, sequence in sequence_and_type.items():
-        histogram(sequence, seq_type)
+        aminoacid_dic = histogram(sequence, seq_type)
+        hydrophilicity(aminoacid_dic)
 
     print('⚛ Atomic weight ⇾', round(u_counter),'u')
     
