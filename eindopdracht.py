@@ -1,47 +1,62 @@
 def input_user():
-    input_file = 'sequence.gb'
-    return input_file
+    input_file = input('Input genbank file: ')
+    output_file = input_file.replace(".gb", "_features.txt")
+    
+    if input("separated[1] or uppercased[2]\n>") == "2":
+        uppercased = True
+    else:
+        uppercased = False
+
+    return input_file, output_file, uppercased
 
 
 def origin_seq(sequence):
+    '''Makes from the ORIGIN sequence a pure sequence'''
+    # Removes the ORIGIN section header
     sequence = sequence[1::]
+
     final_seq = ''
 
     for line in sequence:
         line = line.split()
         for split in line:
-            if not split.isdigit():
+            if split.isalpha():
                 final_seq += split
-    # print(final_seq.upper())
     return final_seq
+
 
 def reading_file(input_file):
     genbank_file = open(input_file, 'r')
 
-    origen_loop = False
+    # Setting loop variables to False
+    origin_loop = False
     features_loop = False
     subsection = False
+    definition_loop = False
 
     sequence = []
     features_list = []
-
+    header = ''
 
     for line in genbank_file:
-        # print(line, end='')
-        
-        if line.startswith('FEATURES'):
+        if line.startswith('DEFINITION'):
+            definition_loop = True
+        elif line.startswith('ACCESSION'):
+            definition_loop = False
+        elif line.startswith('FEATURES'):
             features_loop = True
-
         elif line.startswith('ORIGIN'):
-            origen_loop = True
+            origin_loop = True
             features_loop = False
-        
         elif line.startswith('//'):
-            origen_loop = False
+            origin_loop = False
 
-        if features_loop == True:
+        if definition_loop:
+            header += line
+
+        if features_loop:
             if not line[5:].startswith(' ') or subsection == True:
-                # print(line.strip())
+
                 features_list.append(line.strip())
 
                 if not line[5:].startswith(' '):
@@ -49,61 +64,104 @@ def reading_file(input_file):
                 else:
                     subsection = False
 
-        if origen_loop == True:
+        if origin_loop:
             sequence.append(line)
 
+    # Removing section title
     features_list = features_list[1::]
     genbank_file.close()
 
-    return sequence, features_list
+    return sequence, features_list, header
 
-def printing_terminal_output(sequence, features_list, final_seq):
+
+def header_converter(header):
+    final_header = header.replace('DEFINITION', '').strip()
+
+    return final_header
+
+
+def features_list_converter(features_list):
     new_list = []
-    # print(len(features_list))
+    final_list = []
 
-    new_line = ''
-    count = 0
-
-    for line in features_list:
-        # print(line)
-        new_line += line
-        count += 1
-        if count == 2:
-            new_list.append(' ' + new_line)
-            count = 0
-            new_line = ''
+    for i in range(0, len(features_list), 2):
+        combi = features_list[i] + features_list[i+1]
+        new_list.append(combi)
 
     for line in new_list:
         line = line.split('/')
-        header1, header2 = line[0].split()
-        header3 = line[1]
-        newlist = header1, header2, header3
-        # line = line[0].split().append(line[1])
-        # print(newlist)
-        header = '>' + newlist[0] + ' /' + newlist[2]
-        # print(header)
+        header1, positions = line[0].split()
+        header2 = line[1]
 
-        positions = newlist[1]
-        print(header)
+        list_item = header1 + ' /' + header2 + '--' + positions
+        final_list.append(list_item)
 
-        if '..' in positions:
+    return final_list
 
-            pos1, pos2 = positions.split('..')
-            print(pos1, pos2)
-            print(final_seq[int(pos1)-1:int(pos2)])
 
+def writing_file(final_seq, final_list, final_header, output_file, uppercased):
+    writing_file = open(output_file, 'w')
+
+    print(final_header, file=writing_file)
+
+    for item in final_list:
+
+        item = item.split('--')
+        header = item[0]
+        positions = item[1]
+        print('\n>' + header, file=writing_file)
+        coordinate = positions.split('..')
+
+        #uppercase file
+        if uppercased == True:
+            if len(coordinate) == 1:
+                sequence = final_seq[:int(coordinate[0])-1] + final_seq[int(coordinate[0])-1].upper()
+            else:
+                if coordinate[0] == "1":
+                    sequence = final_seq[int(coordinate[0])-1:int(coordinate[1])].upper()
+                else:
+                    sequence = final_seq[0:int(coordinate[0])-1] + final_seq[int(coordinate[0])-1:int(coordinate[1])].upper()
+
+        #seperate file
         else:
-            pos1 = positions
-            print(pos1)
-            print(final_seq[int(pos1)-1::])
+            if len(coordinate) == 1:
+                sequence = final_seq[int(coordinate[0])-1]
+            else:
+                sequence = final_seq[int(coordinate[0])-1:int(coordinate[1])]
+
+        writing_sequence(sequence, writing_file)
+
+    print('\n', file=writing_file)
+
+    writing_file.close()
+
+
+def writing_sequence(sequence, writing_file):
+    print_seq = ''
+    for letter in sequence:
+        print_seq += letter
+        if len(print_seq) == 60:
+            print(print_seq, file=writing_file)
+            print_seq = ''
+    print(print_seq, file=writing_file)
+
+
 
 def main():
-    input_file = input_user()
+    # Getting input files from user
+    input_file, output_file, uppercased = input_user()
 
-    sequence, features_list = reading_file(input_file)
+    # Reading through genbank file 
+    sequence, features_list, header = reading_file(input_file)
 
+    # Converting ORIGEN and FEATURES
+    final_header = header_converter(header)
     final_seq = origin_seq(sequence)
+    final_list = features_list_converter(features_list)
 
-    printing_terminal_output(sequence, features_list, final_seq)
+    # Writing out to file
+    writing_file(final_seq, final_list, final_header, output_file, uppercased)
 
+    print('File written to', output_file)
+    
 main()
