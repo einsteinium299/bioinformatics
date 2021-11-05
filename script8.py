@@ -29,9 +29,11 @@ def reading_file(input_file):
     genbank_file = open(input_file, 'r')
 
     # Setting loop variables to False
-    origin_loop, features_loop, subsection, definition_loop = False
+    origin_loop = False
+    features_loop = False
+    subsection = False
+    definition_loop = False
 
-    # Making empty lists
     sequence = []
     features_list = []
     header = []
@@ -119,20 +121,17 @@ def writing_file(final_seq, final_list, final_header, output_file, uppercased):
 
         #uppercase file
         if uppercased:
-#            if len(coordinate) == 1:
-#                sequence = final_seq[:int(coordinate[0])-1] + final_seq[int(coordinate[0])-1].upper()
-#            else:
 
-                if coordinate[0] == "1":
-                    if len(coordinate) == 1:
-                        sequence = final_seq[0].upper() + final_seq[1:]
-                    else:
-                        sequence = final_seq[int(coordinate[0])-1:int(coordinate[1])].upper()
+            if coordinate[0] == "1":
+                if len(coordinate) == 1:
+                    sequence = final_seq[0].upper() + final_seq[1:]
                 else:
-                    if len(coordinate) == 1:
-                        sequence = final_seq[:int(coordinate[0])-1] + final_seq[int(coordinate[0])-1].upper()
-                    else:
-                        sequence = final_seq[0:int(coordinate[0])-1] + final_seq[int(coordinate[0])-1:int(coordinate[1])].upper()
+                    sequence = final_seq[int(coordinate[0])-1:int(coordinate[1])].upper()
+            else:
+                if len(coordinate) == 1:
+                    sequence = final_seq[:int(coordinate[0])-1] + final_seq[int(coordinate[0])-1].upper()
+                else:
+                    sequence = final_seq[0:int(coordinate[0])-1] + final_seq[int(coordinate[0])-1:int(coordinate[1])].upper()
 
         #seperate file
         else:
