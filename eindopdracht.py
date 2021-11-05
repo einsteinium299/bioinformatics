@@ -36,7 +36,7 @@ def reading_file(input_file):
 
     sequence = []
     features_list = []
-    header = ''
+    header = []
 
     for line in genbank_file:
         if line.startswith('DEFINITION'):
@@ -52,7 +52,7 @@ def reading_file(input_file):
             origin_loop = False
 
         if definition_loop:
-            header += line
+            header.append(line)
 
         if features_loop:
             if not line[5:].startswith(' ') or subsection == True:
@@ -75,7 +75,14 @@ def reading_file(input_file):
 
 
 def header_converter(header):
-    final_header = header.replace('DEFINITION', '').strip()
+
+    final_header = ''
+    for item in header:
+        final_header += item.replace('DEFINITION', '').strip()
+        if len(header) > 1:
+            final_header += ' '
+
+    final_header = final_header.strip()
 
     return final_header
 
@@ -113,12 +120,16 @@ def writing_file(final_seq, final_list, final_header, output_file, uppercased):
         coordinate = positions.split('..')
 
         #uppercase file
-        if uppercased == True:
-            if len(coordinate) == 1:
-                sequence = final_seq[:int(coordinate[0])-1] + final_seq[int(coordinate[0])-1].upper()
-            else:
-                if coordinate[0] == "1":
+        if uppercased:
+
+            if coordinate[0] == "1":
+                if len(coordinate) == 1:
+                    sequence = final_seq[0].upper() + final_seq[1:]
+                else:
                     sequence = final_seq[int(coordinate[0])-1:int(coordinate[1])].upper()
+            else:
+                if len(coordinate) == 1:
+                    sequence = final_seq[:int(coordinate[0])-1] + final_seq[int(coordinate[0])-1].upper()
                 else:
                     sequence = final_seq[0:int(coordinate[0])-1] + final_seq[int(coordinate[0])-1:int(coordinate[1])].upper()
 
@@ -146,7 +157,6 @@ def writing_sequence(sequence, writing_file):
     print(print_seq, file=writing_file)
 
 
-
 def main():
     # Getting input files from user
     input_file, output_file, uppercased = input_user()
@@ -163,5 +173,5 @@ def main():
     writing_file(final_seq, final_list, final_header, output_file, uppercased)
 
     print('File written to', output_file)
-    
+
 main()
