@@ -1,4 +1,4 @@
-**# Scripts made for assignments Bioinformatics Year 1**
+# Scripts made for assignments Bioinformatics Year 1
 
 ---
 
