@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-A script for rendering an animation of the NMDA molecule.
+A script for rendering an animation of the NMDA receptor.
 Note: pypovray and it's dependencies have to be installed.
 Instructions at:
 https://nbviewer.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/install_and_configure.ipynb
@@ -9,7 +9,7 @@ https://nbviewer.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/in
 This script has to be located in the folder of the cloned git repository.
 """
 
-
+#__metavars__
 __author__ = 'SL de Haan'
 __version__ = '0.0.1'
 
@@ -20,7 +20,7 @@ from vapory import Scene, LightSource, Camera, Pigment, Finish, Interior, Sphere
 
 def static_objects():
     """
-    Function for environmental static objects.
+    Function for environmental static objects 
     Param : None
     Returns: List
     """
@@ -45,7 +45,7 @@ def static_objects():
     N1_2_L = Cylinder([-18, -3, -2], [-18, 3, -2], 1.2, Pigment('color', [1, 0, 1]))
     sphere_L = Sphere([-16, 0, 0], 1, Pigment('color', [255, 255, 204]), Finish('phong', 0.8))
 
-    # To the right of the NMDA receptor
+    # Cell wall spheres the right of the middle NMDA receptor.
     cell_wall_1 = Sphere([3.4, 0, 0], 1, Pigment('color', [1, 0, 0]), Finish('phong', 0.8))
     cell_wall_2 = Sphere([4.4, 0, 0], 1, Pigment('color', [1, 0, 0]), Finish('phong', 0.8))
     cell_wall_3 = Sphere([5.4, 0, 0], 1, Pigment('color', [1, 0, 0]), Finish('phong', 0.8))
@@ -58,7 +58,7 @@ def static_objects():
     cell_wall_10 = Sphere([12.4, 0, 0], 1, Pigment('color', [1, 0, 0]), Finish('phong', 0.8))
     cell_wall_11 = Sphere([13.4, 0, 0], 1, Pigment('color', [1, 0, 0]), Finish('phong', 0.8))
 
-    # Right right
+    # Cell wall spheres the right of the right NMDA receptor.
     cell_wall_12 = Sphere([19.4, 0, 0], 1, Pigment('color', [1, 0, 0]), Finish('phong', 0.8))
     cell_wall_13 = Sphere([20.4, 0, 0], 1, Pigment('color', [1, 0, 0]), Finish('phong', 0.8))
     cell_wall_14 = Sphere([21.4, 0, 0], 1, Pigment('color', [1, 0, 0]), Finish('phong', 0.8))
@@ -68,7 +68,7 @@ def static_objects():
     cell_wall_18 = Sphere([25.4, 0, 0], 1, Pigment('color', [1, 0, 0]), Finish('phong', 0.8))
     cell_wall_19 = Sphere([26.4, 0, 0], 1, Pigment('color', [1, 0, 0]), Finish('phong', 0.8))
 
-    # To the left of the NMDA receptor
+    # Cell wall spheres the left of the middle NMDA receptor.
     cell_wall_20 = Sphere([-3.4, 0, 0], 1, Pigment('color', [1, 0, 0]), Finish('phong', 0.8))
     cell_wall_21 = Sphere([-4.4, 0, 0], 1, Pigment('color', [1, 0, 0]), Finish('phong', 0.8))
     cell_wall_22 = Sphere([-5.4, 0, 0], 1, Pigment('color', [1, 0, 0]), Finish('phong', 0.8))
@@ -81,8 +81,7 @@ def static_objects():
     cell_wall_29 = Sphere([-12.4, 0, 0], 1, Pigment('color', [1, 0, 0]), Finish('phong', 0.8))
     cell_wall_30 = Sphere([-13.4, 0, 0], 1, Pigment('color', [1, 0, 0]), Finish('phong', 0.8))
 
-
-    # Left left
+    # Cell wall spheres the left of the left NMDA receptor.
     cell_wall_31 = Sphere([-19.4, 0, 0], 1, Pigment('color', [1, 0, 0]), Finish('phong', 0.8))
     cell_wall_32 = Sphere([-20.4, 0, 0], 1, Pigment('color', [1, 0, 0]), Finish('phong', 0.8))
     cell_wall_33 = Sphere([-21.4, 0, 0], 1, Pigment('color', [1, 0, 0]), Finish('phong', 0.8))
@@ -108,8 +107,13 @@ def frame(step):
 
     # Setting up variables for framecount to adjust the animation for different framecounts.
     frame_count = eval(SETTINGS.NumberFrames)
+    # Step_size is the distance moved per frame for different objects.
+    # The step_size decreases the more frames in default.ini and vice versa.
     step_size = 15 / (frame_count/3)
-    frame_part = frame_count/3    
+    # The animation is split into three different parts
+    # One frame part is the same as 1/3 of the animation.
+    # This is to make sure the animation works no matter the frame count.
+    frame_part = frame_count/3
 
 
 
@@ -117,10 +121,12 @@ def frame(step):
         ATP = pdb.PDBMolecule("/homes/sldehaan/doc/ultrapov/pypovray/pdb/glutamate.pdb", offset=[-5, 18-(step*step_size), 0])
         sphere_1 = Sphere([0, 0, 0], 1, Pigment('color', [255, 255, 204]), Finish('phong', 0.8))
         object_list = [sphere_1]
+
     elif step < frame_part*2: # 1/3 to 2/3 part of the animation.
         ATP = pdb.PDBMolecule("/homes/sldehaan/doc/ultrapov/pypovray/pdb/glutamate.pdb", offset=[-5, 3, 0])
         sphere_1 = Sphere([0, 0.2*(step-frame_part), 0], 1, Pigment('color', [255, 255, 204]), Finish('phong', 0.8))
         object_list = [sphere_1]
+
     else: # 2/3 to 3/3 part of the animation.
         ATP = pdb.PDBMolecule("/homes/sldehaan/doc/ultrapov/pypovray/pdb/glutamate.pdb", offset=[-5, 3, 0])
         sphere_1 = Sphere([0, (-0.3*(step-(frame_part*2)))+20, 1], 0.7, Pigment('color', [0, 100, 0]), Finish('phong', 0.8)) # Representing Calcium
